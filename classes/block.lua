@@ -2,6 +2,7 @@ Block = Object:extend()
 
 function Block:new()
     self.blocks = {}
+    self.obstacles = {1,0,1,0,1,1,1,1}
 end
 
 function Block:newBlock(id, x, y, w, h, inv, type)
@@ -14,8 +15,8 @@ function Block:newBlock(id, x, y, w, h, inv, type)
     self.blocks[id].invisible = inv
 end
 
-function Block:show(t)
-    table.insert(self.inv, t)
+function Block:funcObs()
+    --
 end
 
 function Block:draw()

@@ -16,6 +16,7 @@ function Player:new()
 end
 
 function Player:update(dt)
+    -- MOVEMENT
     function love.keypressed(key) -- Are stacked functions illegal? I feel like they are.
         if key == "space" then
             self.body:setLinearVelocity(0, 0) -- STOP!
@@ -34,19 +35,7 @@ function Player:update(dt)
         end
     end
 
-    if self.body:getX() - self.size/2 >= ww or self.body:getX() + self.size/2 <= 0 then
-        self.lost = true
-        self.body:setType("static")
-    end
-
-    if self.body:getY() + self.size/2 <= 0 then
-        self.body:setY(wh-self.size)
-    elseif self.body:getY() - self.size/2 >= wh then
-        self.body:setY(self.size)
-    end
-
     local px, py = self.body:getLinearVelocity()
-    print(py)
     if py >= 3100 then
         self.body:setLinearVelocity(px, 3100)
     end

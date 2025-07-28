@@ -1,6 +1,7 @@
 HITW = Object:extend()
 
 function HITW:new()
+    self.ticker = 0
     self.img = love.graphics.newImage("img/zero.png")
     self.obstaclesMap = {
         {1, 1, 0, 0, 1, 1, 1, 1},
@@ -21,6 +22,7 @@ function HITW:new()
 end
 
 function HITW:update(dt)
+    self.ticker = self.ticker + 1 * dt
     -- OBSTACLES
     for i, box in ipairs(self.obstacles) do
         if box == 1 then
@@ -29,7 +31,7 @@ function HITW:update(dt)
             block.blocks[i].body:setY(1024) -- arbitrary number
         end
 
-        block.blocks[i].body:setX(LERP(ww+block.blocks[i].width, -block.blocks[i].width,   (math.sin(ticker-math.pi/2)+1)/2))
+        block.blocks[i].body:setX(LERP(ww+block.blocks[i].width, -block.blocks[i].width,   (math.sin(self.ticker-math.pi/2)+1)/2))
 
         if math.floor((block.blocks[i].body:getX() + block.blocks[i].width)*64) == 0 or math.floor((ww+block.blocks[i].width - block.blocks[i].body:getX())*64) == 0 then -- Idfk how this works again
             self.obstacles = self.obstaclesMap[math.random(1, #self.obstaclesMap)]
@@ -50,8 +52,10 @@ function HITW:update(dt)
 end
 
 function HITW:draw()
-    for i = 1, #block.blocks do
-        love.graphics.setColor(1, 72/255, 101/255)
-        love.graphics.draw(self.img, block.blocks[i].body:getX(), block.blocks[i].body:getY(), block.blocks[i].body:getAngle(), block.blocks[i].width, block.blocks[i].height, self.img:getWidth()/2, self.img:getHeight()/2)
+    for id, object in pairs(block.blocks) do
+        if not object.body:isDestroyed() then
+            love.graphics.setColor(1, 72/255, 101/255)
+            love.graphics.draw(self.img, object.body:getX(), object.body:getY(), object.body:getAngle(), object.width, object.height, self.img:getWidth()/2, self.img:getHeight()/2)
+        end
     end
 end

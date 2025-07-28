@@ -13,13 +13,17 @@ function Block:newBlock(id, x, y, w, h, type)
     self.blocks[id].fixture = love.physics.newFixture(self.blocks[id].body, self.blocks[id].shape)
 end
 
-function Block:update(dt)
-    --
+function Block:deleteBlock(id)
+    if not self.blocks[id].body:isDestroyed() then
+        self.blocks[id].body:destroy()
+    end
 end
 
 function Block:draw()
-    for i = 1, #self.blocks do
+    for id, object in pairs(self.blocks) do
         love.graphics.setColor(0, 1, 0)
-        love.graphics.polygon("line", self.blocks[i].body:getWorldPoints(self.blocks[i].shape:getPoints()))
+        if not object.body:isDestroyed() then      
+            love.graphics.polygon("line", object.body:getWorldPoints(object.shape:getPoints()))
+        end
     end
 end

@@ -25,13 +25,11 @@ function love.update(dt)
 
     world:update(dt)
     player:update(dt)
-    --block:update(dt)
     hitw:update(dt)
 end
 
 function love.draw()
     love.graphics.setBackgroundColor(0, 194/255, 1)
     player:draw()
-    --block:draw()
     hitw:draw()
 end

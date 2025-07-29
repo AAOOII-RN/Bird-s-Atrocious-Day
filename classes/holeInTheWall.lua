@@ -17,7 +17,7 @@ function HITW:new()
     self.obstacles = self.obstaclesMap[math.random(1, #self.obstaclesMap)]
 
     for i = 1, #self.obstacles do
-        block:newBlock(i, ww/3, 1024, wh/#self.obstacles, wh/#self.obstacles)
+        block:writeBlock(i, ww/3, 1024, wh/#self.obstacles, wh/#self.obstacles)
     end
 end
 

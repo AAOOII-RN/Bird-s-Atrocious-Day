@@ -4,37 +4,52 @@ function ButtonUI:new()
     self.buttons = {}
 end
 
-function ButtonUI:writeButton(id, x, y, w, h)
-    x = x or 0
-    y = y or 0
-    w = w or 128
-    h = h or 64
-    self.buttons[id] = {}
-    self.buttons[id].x = x
-    self.buttons[id].y = y
-    self.buttons[id].width = w
-    self.buttons[id].height = h
-    self.buttons[id].hovered = false
+function ButtonUI:createButton(id, x, y, w, h, wake)
+    self.buttons[id] = {
+        x = x or 0,
+        y = y or 0,
+        width = w or 0,
+        height = h or 0,
+        wake = wake,
+        hovered = false
+    }
+end
+
+function ButtonUI:editButton(id, x, y, w, h, wake)
+        self.buttons[id] = {
+            x = x or self.buttons[id].x,
+            y = y or self.buttons[id].y,
+            width = w or self.buttons[id].width,
+            height = h or self.buttons[id].height,
+            wake = wake,
+            hovered = self.buttons[id].hovered
+        }
 end
 
 function ButtonUI:update(dt)
     mx, my = love.mouse.getPosition()
 
-    for i = 1, #self.buttons do
-        self.buttons[i].hovered = false
+    for _, obj in pairs(self.buttons) do
+        obj.hovered = false
 
-        if mx >= self.buttons[i].x and mx <= self.buttons[i].x + self.buttons[i].width and my >= self.buttons[i].y and my <= self.buttons[i].y + self.buttons[i].height then
-            self.buttons[i].hovered = true
+        if mx >= obj.x and mx <= obj.x + obj.width and my >= obj.y and my <= obj.y + obj.height then
+            obj.hovered = true
         end
     end
 end
 
+function ButtonUI:isHovered(id)
+    return self.buttons[id].hovered  
+end
+
 function ButtonUI:draw()
     love.graphics.setColor(0, 1, 0)
-    for i = 1, #self.buttons do
-        love.graphics.rectangle("line", self.buttons[i].x, self.buttons[i].y, self.buttons[i].width, self.buttons[i].height)
-        love.graphics.print("ID: " .. i, self.buttons[i].x, self.buttons[i].y)
-        love.graphics.print("Hovered: " .. tostring(self.buttons[i].hovered), self.buttons[i].x, self.buttons[i].y + self.buttons[i].height/2)
+    for id, obj in pairs(self.buttons) do
+        if obj.wake then
+            love.graphics.rectangle("line", obj.x, obj.y, obj.width, obj.height)
+            love.graphics.print("ID: " .. id, obj.x, obj.y)
+            love.graphics.print("Hovered: " .. tostring(obj.hovered), obj.x, obj.y + obj.height/2)
+        end
     end
     love.graphics.setColor(1, 1, 1)
 end

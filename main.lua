@@ -18,9 +18,8 @@ function love.load()
     
     menus = Menus()
     player = Player()
-    --hitw = HITW()
+    hitw = HITW()
 
-    menus:intro()
 end
 
 function LERP(from, to, t)
@@ -32,13 +31,21 @@ function love.update(dt)
 
     world:update(dt)
     btnui:update(dt)
+    menus:update(dt)
     player:update(dt)
-    --hitw:update(dt)
+
+    if menus.atMenu == "play" then 
+        hitw:update(dt)
+    end
+end
+
+function love.mousepressed()
+    menus:mousepressed()
 end
 
 function love.draw()
     love.graphics.setBackgroundColor(0, 194/255, 1)
     btnui:draw()
     player:draw()
-    --hitw:draw()
+    hitw:draw()
 end

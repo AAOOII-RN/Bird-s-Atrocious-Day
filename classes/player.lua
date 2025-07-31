@@ -5,12 +5,9 @@ function Player:new()
     self.img = love.graphics.newImage("img/zero.png")
 
     -- PLAYER PHYSICS BODY
-    self.size = 22
-    self.shape = love.physics.newRectangleShape(self.size, self.size)
-    self.body = love.physics.newBody(world, ww/2, wh/2, "dynamic")
-    self.fixture = love.physics.newFixture(self.body, self.shape)
+    block:newBlock("Player", ww/2, wh/2, 22, 22, "dynamic")
+    self.obj = block.blocks["Player"]
 
-    self.fixture:setFriction(1)
     self.goRight = true
     self.lost = false
 end
@@ -19,31 +16,31 @@ function Player:update(dt)
     -- MOVEMENT
     function love.keypressed(key) -- Are stacked functions illegal? I feel like they are.
         if key == "space" then
-            self.body:setLinearVelocity(0, 0) -- STOP!
-            self.body:setAngularVelocity(0)
-            self.body:applyLinearImpulse(0, -40)
+            self.obj.body:setLinearVelocity(0, 0) -- STOP!
+            self.obj.body:setAngularVelocity(0)
+            self.obj.body:applyLinearImpulse(0, -40)
 
             if self.goRight then
-                self.body:applyLinearImpulse(30, 0)
-                self.body:applyAngularImpulse(45)
+                self.obj.body:applyLinearImpulse(30, 0)
+                self.obj.body:applyAngularImpulse(45)
                 self.goRight = false
             elseif not self.goRight then
-                self.body:applyLinearImpulse(-30, 0)
-                self.body:applyAngularImpulse(-45)
+                self.obj.body:applyLinearImpulse(-30, 0)
+                self.obj.body:applyAngularImpulse(-45)
                 self.goRight = true
             end
         end
     end
 
-    local px, py = self.body:getLinearVelocity()
+    local px, py = self.obj.body:getLinearVelocity()
     if py >= 3100 then
-        self.body:setLinearVelocity(px, 3100)
+        self.obj.body:setLinearVelocity(px, 3100)
     end
 end
 
 function Player:draw()
     love.graphics.setColor(1, 205/255, 0)
-    love.graphics.draw(self.img, self.body:getX(), self.body:getY(), self.body:getAngle(), self.size, self.size, self.img:getWidth()/2, self.img:getHeight()/2)
+    love.graphics.draw(self.img, self.obj.body:getX(), self.obj.body:getY(), self.obj.body:getAngle(), self.obj.width, self.obj.height, self.img:getWidth()/2, self.img:getHeight()/2)
 
     love.graphics.setColor(1, 1, 1)
 end

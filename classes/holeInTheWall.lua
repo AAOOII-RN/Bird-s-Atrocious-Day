@@ -17,7 +17,7 @@ function HITW:new()
     self.obstacles = self.obstaclesMap[math.random(1, #self.obstaclesMap)]
 
     for i = 1, #self.obstacles do
-        block:newBlock(i, ww/3, 1024, wh/#self.obstacles, wh/#self.obstacles)
+        block:newBlock("hitw_obs" .. i, ww/3, 1024, wh/#self.obstacles, wh/#self.obstacles)
     end
 end
 
@@ -25,29 +25,30 @@ function HITW:update(dt)
     self.ticker = self.ticker + 1 * dt
     -- OBSTACLES
     for i, box in ipairs(self.obstacles) do
+        local hitw_obs = block.blocks["hitw_obs" .. i]
         if box == 1 then
-            block.blocks[i].body:setY(i * block.blocks[i].height - block.blocks[i].height/2)
+            hitw_obs.body:setY(i * hitw_obs.height - hitw_obs.height/2)
         else
-            block.blocks[i].body:setY(1024) -- arbitrary number
+            hitw_obs.body:setY(1024) -- arbitrary number, pooling method
         end
 
-        block.blocks[i].body:setX(LERP(ww+block.blocks[i].width, -block.blocks[i].width,   (math.sin(self.ticker-math.pi/2)+1)/2))
+        hitw_obs.body:setX(LERP(ww+hitw_obs.width, -hitw_obs.width,   (math.sin(self.ticker-math.pi/2)+1)/2))
 
-        if math.floor((block.blocks[i].body:getX() + block.blocks[i].width)*64) == 0 or math.floor((ww+block.blocks[i].width - block.blocks[i].body:getX())*64) == 0 then -- Idfk how this works again
+        if math.floor((hitw_obs.body:getX() + hitw_obs.width)*64) == 0 or math.floor((ww+hitw_obs.width - hitw_obs.body:getX())*64) == 0 then -- Idfk how this works again
             self.obstacles = self.obstaclesMap[math.random(1, #self.obstaclesMap)]
         end 
     end
 
     -- PLAYER
-    if player.body:getX() - player.size/2 >= ww or player.body:getX() + player.size/2 <= 0 then
+    if player.obj.body:getX() - player.obj.width/2 >= ww or player.obj.body:getX() + player.obj.width/2 <= 0 then
         player.lost = true
-        player.body:setType("static")
+        player.obj.body:setType("static")
     end
 
-    if player.body:getY() + player.size/2 <= 0 then
-        player.body:setY(wh-player.size)
-    elseif player.body:getY() - player.size/2 >= wh then
-        player.body:setY(player.size)
+    if player.obj.body:getY() + player.obj.width/2 <= 0 then
+        player.obj.body:setY(wh-player.obj.height)
+    elseif player.obj.body:getY() - player.obj.width/2 >= wh then
+        player.obj.body:setY(player.obj.width)
     end
 end
 

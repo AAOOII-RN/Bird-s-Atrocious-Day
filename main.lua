@@ -19,7 +19,6 @@ function love.load()
     menus = Menus()
     player = Player()
     hitw = HITW()
-
 end
 
 function LERP(from, to, t)

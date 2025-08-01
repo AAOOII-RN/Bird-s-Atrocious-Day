@@ -13,6 +13,9 @@ function Player:new()
 end
 
 function Player:update(dt)
+    if menus.atMenu == "pause" then 
+        self.obj.body:setType("static")
+    end
     -- MOVEMENT
     function love.keypressed(key) -- Are stacked functions illegal? I feel like they are.
         if key == "space" then

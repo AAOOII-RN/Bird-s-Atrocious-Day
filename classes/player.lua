@@ -5,7 +5,7 @@ function Player:new()
     self.img = love.graphics.newImage("img/zero.png")
 
     -- PLAYER PHYSICS BODY
-    block:newBlock("Player", ww/2, wh/2, 22, 22, "dynamic")
+    block:newBlock("Player", ww/2, wh/2, 33, 33, "dynamic")
     self.obj = block.blocks["Player"]
 
     self.goRight = true
@@ -21,15 +21,15 @@ function Player:update(dt)
         if key == "space" then
             self.obj.body:setLinearVelocity(0, 0) -- STOP!
             self.obj.body:setAngularVelocity(0)
-            self.obj.body:applyLinearImpulse(0, -40)
+            self.obj.body:applyLinearImpulse(0, -90)
 
             if self.goRight then
-                self.obj.body:applyLinearImpulse(30, 0)
-                self.obj.body:applyAngularImpulse(45)
+                self.obj.body:applyLinearImpulse(70, 0)
+                self.obj.body:applyAngularImpulse(180)
                 self.goRight = false
             elseif not self.goRight then
-                self.obj.body:applyLinearImpulse(-30, 0)
-                self.obj.body:applyAngularImpulse(-45)
+                self.obj.body:applyLinearImpulse(-70, 0)
+                self.obj.body:applyAngularImpulse(-180)
                 self.goRight = true
             end
         end

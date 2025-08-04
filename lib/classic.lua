@@ -60,7 +60,7 @@ end
 
 function Object:__call(...)
   local obj = setmetatable({}, self)
-  obj:new(...)
+  obj:new()
   return obj
 end
 

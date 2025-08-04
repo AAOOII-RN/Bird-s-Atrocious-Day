@@ -27,15 +27,14 @@ end
 
 function love.update(dt)
     ticker = ticker + 1 * dt
-
-    world:update(dt)
+    
+    if menus.atMenu ~= "paused" then
+        world:update(dt)
+    end
     btnui:update(dt)
     menus:update(dt)
     player:update(dt)
-
-    if menus.atMenu == "play" then 
-        hitw:update(dt)
-    end
+    hitw:update(dt)
 end
 
 function love.mousepressed()

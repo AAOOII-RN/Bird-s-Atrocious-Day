@@ -22,7 +22,10 @@ function HITW:new()
 end
 
 function HITW:update(dt)
-    self.ticker = self.ticker + 1 * dt
+    if menus.atMenu == "play" then 
+        self.ticker = self.ticker + 1 * dt
+    end
+    
     -- OBSTACLES
     for i, box in ipairs(self.obstacles) do
         local hitw_obs = block.blocks["hitw_obs" .. i]
@@ -32,7 +35,7 @@ function HITW:update(dt)
             hitw_obs.body:setY(1024) -- arbitrary number, pooling method
         end
 
-        hitw_obs.body:setX(LERP(ww+hitw_obs.width, -hitw_obs.width,   (math.sin(self.ticker-math.pi/2)+1)/2))
+        hitw_obs.body:setX(LERP(ww+hitw_obs.width, -hitw_obs.width,   (math.sin(self.ticker*0.75-math.pi/2)+1)/2))
 
         if math.floor((hitw_obs.body:getX() + hitw_obs.width)*64) == 0 or math.floor((ww+hitw_obs.width - hitw_obs.body:getX())*64) == 0 then -- Idfk how this works again
             self.obstacles = self.obstaclesMap[math.random(1, #self.obstaclesMap)]
@@ -40,9 +43,18 @@ function HITW:update(dt)
     end
 
     -- PLAYER
-    if player.obj.body:getX() - player.obj.width/2 >= ww or player.obj.body:getX() + player.obj.width/2 <= 0 then
-        player.lost = true
-        player.obj.body:setType("static")
+    if menus.atMenu == "play" or menus.atMenu == "lose" then
+        if player.obj.body:getX() - player.obj.width/2 >= ww or player.obj.body:getX() + player.obj.width/2 <= 0 then
+            player.lost = true
+            player.obj.body:setType("static")
+            menus.atMenu = "lose"
+        end
+    else
+        if player.obj.body:getX() + player.obj.width/2 <= 0 then
+            player.obj.body:setX(ww-player.obj.height)
+        elseif player.obj.body:getX() - player.obj.width/2 >= ww then
+            player.obj.body:setX(player.obj.width)
+        end
     end
 
     if player.obj.body:getY() + player.obj.width/2 <= 0 then
@@ -54,9 +66,12 @@ end
 
 function HITW:draw()
     for id, object in pairs(block.blocks) do
-        if not object.body:isDestroyed() then
-            love.graphics.setColor(1, 72/255, 101/255)
-            love.graphics.draw(self.img, object.body:getX(), object.body:getY(), object.body:getAngle(), object.width, object.height, self.img:getWidth()/2, self.img:getHeight()/2)
+        if string.match(id, "hitw_obs") then
+            if not object.body:isDestroyed() then
+                love.graphics.setColor(1, 72/255, 101/255)
+                love.graphics.draw(self.img, object.body:getX(), object.body:getY(), object.body:getAngle(), object.width, object.height, self.img:getWidth()/2, self.img:getHeight()/2)
+            end
         end
     end
+    love.graphics.setColor(1, 1, 1)
 end

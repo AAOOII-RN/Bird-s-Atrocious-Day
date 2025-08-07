@@ -43,6 +43,7 @@ end
 
 function love.draw()
     love.graphics.setBackgroundColor(0, 194/255, 1)
+    block:draw()
     btnui:draw()
     player:draw()
     hitw:draw()

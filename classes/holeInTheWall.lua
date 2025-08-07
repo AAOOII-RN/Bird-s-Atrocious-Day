@@ -1,77 +1,21 @@
 HITW = Object:extend()
 
 function HITW:new()
-    self.ticker = 0
     self.img = love.graphics.newImage("img/zero.png")
-    self.obstaclesMap = {
-        {1, 1, 0, 0, 1, 1, 1, 1},
-        {1, 1, 1, 0, 1, 1, 1, 0},
-        {1, 0, 1, 1, 1, 0, 1, 1},
-        {0, 1, 0, 1, 1, 1, 0, 1},
-        {1, 1, 1, 1, 0, 1, 0, 1},
-        {1, 0, 1, 0, 1, 1, 1, 1},
-        {1, 1, 1, 1, 1, 0, 1, 1},
-        {1, 0, 1, 0, 1, 0, 1, 1},
-        {1, 0, 1, 1, 1, 1, 0, 1},
-    }
-    self.obstacles = self.obstaclesMap[math.random(1, #self.obstaclesMap)]
-
-    for i = 1, #self.obstacles do
-        block:newBlock("hitw_obs" .. i, ww/3, 1024, wh/#self.obstacles, wh/#self.obstacles)
-    end
+    self.ticker = 0
+    self.space = 50
+    self.spacePos = wh/2
+    self.obsTop = block:newBlock("obstacle_top", 100, wh/2, 100, wh)
+    self.obsDown = block:newBlock("obstacle_bottom", 100, wh/2, 100, wh)
 end
 
 function HITW:update(dt)
-    if menus.atMenu == "play" then 
-        self.ticker = self.ticker + 1 * dt
-    end
-    
-    -- OBSTACLES
-    for i, box in ipairs(self.obstacles) do
-        local hitw_obs = block.blocks["hitw_obs" .. i]
-        if box == 1 then
-            hitw_obs.body:setY(i * hitw_obs.height - hitw_obs.height/2)
-        else
-            hitw_obs.body:setY(1024) -- arbitrary number, pooling method
-        end
-
-        hitw_obs.body:setX(LERP(ww+hitw_obs.width, -hitw_obs.width,   (math.sin(self.ticker*0.75-math.pi/2)+1)/2))
-
-        if math.floor((hitw_obs.body:getX() + hitw_obs.width)*64) == 0 or math.floor((ww+hitw_obs.width - hitw_obs.body:getX())*64) == 0 then -- Idfk how this works again
-            self.obstacles = self.obstaclesMap[math.random(1, #self.obstaclesMap)]
-        end 
-    end
-
-    -- PLAYER
-    if menus.atMenu == "play" or menus.atMenu == "lose" then
-        if player.obj.body:getX() - player.obj.width/2 >= ww or player.obj.body:getX() + player.obj.width/2 <= 0 then
-            player.lost = true
-            player.obj.body:setType("static")
-            menus.atMenu = "lose"
-        end
-    else
-        if player.obj.body:getX() + player.obj.width/2 <= 0 then
-            player.obj.body:setX(ww-player.obj.height)
-        elseif player.obj.body:getX() - player.obj.width/2 >= ww then
-            player.obj.body:setX(player.obj.width)
-        end
-    end
-
-    if player.obj.body:getY() + player.obj.width/2 <= 0 then
-        player.obj.body:setY(wh-player.obj.height)
-    elseif player.obj.body:getY() - player.obj.width/2 >= wh then
-        player.obj.body:setY(player.obj.width)
-    end
+    self.ticker = self.ticker + 1 * dt
+    self.spacePos = LERP(self.space, wh-self.space, math.sin(self.ticker)*math.sin(self.ticker))
+    self.obsTop.body:setY(self.spacePos - self.obsTop.height/2 - self.space)
+    self.obsDown.body:setY(self.spacePos + self.obsDown.height/2 + self.space)
 end
 
 function HITW:draw()
-    for id, object in pairs(block.blocks) do
-        if string.match(id, "hitw_obs") then
-            if not object.body:isDestroyed() then
-                love.graphics.setColor(1, 72/255, 101/255)
-                love.graphics.draw(self.img, object.body:getX(), object.body:getY(), object.body:getAngle(), object.width, object.height, self.img:getWidth()/2, self.img:getHeight()/2)
-            end
-        end
-    end
-    love.graphics.setColor(1, 1, 1)
+    
 end

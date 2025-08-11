@@ -11,7 +11,7 @@ function love.load()
     ww, wh = love.graphics.getDimensions()
 
     love.physics.setMeter(64)
-    world = love.physics.newWorld(0, 627)
+    world = love.physics.newWorld(0, 627) -- 627
 
     btnui = ButtonUI()
     block = Block()
@@ -23,6 +23,14 @@ end
 
 function LERP(from, to, t)
     return from+(to - from)*t
+end
+
+function INV_LERP(from, to, dist)
+    return (dist-from)/(to-from)
+end
+
+function FLOOR(a, p) -- idk how to name this
+    return math.floor(p*a)/p
 end
 
 function love.update(dt)

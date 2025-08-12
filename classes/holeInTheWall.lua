@@ -1,23 +1,21 @@
 HITW = Object:extend()
+-- RIP holeInTheWall_OLD.lua, you will be missed despite of your hideous flaws...
 
 function HITW:new()
     self.img = love.graphics.newImage("img/zero.png")
-
-    self.ticker = 0
 
     self.speed = math.random(300, 600)
     self.space = math.random(38, 100)
     self.spacePos = math.random(self.space, wh-self.space)
 
-    self.obsTop = block:newBlock("obstacle_top", 0, wh, 100, wh, "dynamic")
-    self.obsDown = block:newBlock("obstacle_bottom", 0, 0, 100, wh, "dynamic")
+    self.obsTop = block:newBlock("obstacle_top", -100, wh, 100, wh)
+    self.obsDown = block:newBlock("obstacle_bottom", -100, 0, 100, wh)
     self.obsTop.body:setFixedRotation(true)
     self.obsDown.body:setFixedRotation(true)
 end
 
 function HITW:update(dt)
     if menus.atMenu == "play" then
-        self.ticker = self.ticker + 1 * dt
         self.obsTop.body:setLinearVelocity(self.speed, 0)
         self.obsDown.body:setLinearVelocity(self.speed, 0)
         self.obsTop.body:setY(self.spacePos - self.obsTop.height/2 - self.space)
@@ -59,5 +57,15 @@ end
 
 
 function HITW:draw()
-    
+    for id, object in pairs(block.blocks) do
+        if string.match(id, "obstacle") then
+            if not object.body:isDestroyed() then
+                love.graphics.setColor(62/255, 186/255, 73/255)
+                love.graphics.draw(self.img, object.body:getX(), object.body:getY(), object.body:getAngle(), object.width, object.height, self.img:getWidth()/2, self.img:getHeight()/2)
+                love.graphics.draw(self.img, self.obsTop.body:getX(), self.obsTop.body:getY()+self.obsTop.height/2-25, self.obsTop.body:getAngle(), self.obsTop.width*1.5, 50, self.img:getWidth()/2, self.img:getHeight()/2)
+                love.graphics.draw(self.img, self.obsDown.body:getX(), self.obsDown.body:getY()-self.obsDown.height/2+25, self.obsDown.body:getAngle(), self.obsDown.width*1.5, 50, self.img:getWidth()/2, self.img:getHeight()/2)
+            end
+        end
+    end
+    love.graphics.setColor(1, 1, 1)
 end

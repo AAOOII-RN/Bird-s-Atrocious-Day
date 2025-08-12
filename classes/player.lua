@@ -5,14 +5,13 @@ function Player:new()
     self.img = love.graphics.newImage("img/zero.png")
 
     -- PLAYER PHYSICS BODY
-    block:newBlock("Player", ww/2, wh/2, 33, 33, "dynamic")
-    self.obj = block.blocks["Player"]
+    self.obj = block:newBlock("Player", ww/2, wh/2, 33, 33, "dynamic")
 
-    self.goRight = true
     self.lost = false
 end
 
 function Player:update(dt)
+    local pvx, pvy = self.obj.body:getLinearVelocity()
     if menus.atMenu == "pause" then 
         self.obj.body:setType("static")
     end
@@ -21,24 +20,30 @@ function Player:update(dt)
         if key == "space" then
             self.obj.body:setLinearVelocity(0, 0) -- STOP!
             self.obj.body:setAngularVelocity(0)
-            self.obj.body:applyLinearImpulse(0, -90)
+            self.obj.body:applyLinearImpulse(0, -110)
 
-            if self.goRight then
-                self.obj.body:applyLinearImpulse(70, 0)
+            if pvx < 0 then
+                self.obj.body:applyLinearImpulse(105, 0)
                 self.obj.body:applyAngularImpulse(180)
-                self.goRight = false
-            elseif not self.goRight then
-                self.obj.body:applyLinearImpulse(-70, 0)
+            elseif pvx > 0 then
+                self.obj.body:applyLinearImpulse(-105, 0)
                 self.obj.body:applyAngularImpulse(-180)
-                self.goRight = true
+            elseif pvx == 0 then
+                if self.obj.body:getX() > ww/2 then
+                    self.obj.body:applyLinearImpulse(105, 0)
+                    self.obj.body:applyAngularImpulse(180)
+                else
+                    self.obj.body:applyLinearImpulse(-105, 0)
+                    self.obj.body:applyAngularImpulse(-180)
+                end
             end
         end
     end
 
-    local px, py = self.obj.body:getLinearVelocity()
-    if py >= 3100 then
-        self.obj.body:setLinearVelocity(px, 3100)
+    if pvy >= 3100 then
+        self.obj.body:setLinearVelocity(pvx, 3100)
     end
+
 end
 
 function Player:draw()

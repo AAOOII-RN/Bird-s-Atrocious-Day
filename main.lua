@@ -36,9 +36,7 @@ end
 function love.update(dt)
     ticker = ticker + 1 * dt
     
-    if menus.atMenu ~= "paused" then
-        world:update(dt)
-    end
+    world:update(dt)
     btnui:update(dt)
     menus:update(dt)
     player:update(dt)
@@ -51,8 +49,9 @@ end
 
 function love.draw()
     love.graphics.setBackgroundColor(0, 194/255, 1)
-    block:draw()
-    btnui:draw()
+    --block:draw()
+    --btnui:draw()
     player:draw()
     hitw:draw()
+    menus:draw()
 end

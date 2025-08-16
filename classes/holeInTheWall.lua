@@ -2,9 +2,12 @@ HITW = Object:extend()
 -- RIP holeInTheWall_OLD.lua, you will be missed despite of your hideous flaws...
 
 function HITW:new()
+    self.ticker = 0
+    self.coins = {}
+
     self.img = love.graphics.newImage("img/zero.png")
 
-    self.speed = math.random(300, 600)
+    self.speed = math.random(200, 500)
     self.space = math.random(38, 100)
     self.spacePos = math.random(self.space, wh-self.space)
 
@@ -14,7 +17,16 @@ function HITW:new()
     self.obsDown.body:setFixedRotation(true)
 end
 
+function HITW:newCoin(id, x, y, r)
+    self.coins[id] = {}
+    self.coins[id].x = x
+    self.coins[id].y = y
+    self.coins[id].r = r
+end
+
 function HITW:update(dt)
+    self.ticker = self.ticker + 1 * dt
+
     if menus.atMenu == "play" then
         self.obsTop.body:setLinearVelocity(self.speed, 0)
         self.obsDown.body:setLinearVelocity(self.speed, 0)
@@ -22,11 +34,11 @@ function HITW:update(dt)
         self.obsDown.body:setY(self.spacePos + self.obsDown.height/2 + self.space)
     
         if self.obsTop.body:getX() - self.obsTop.width/2 >= ww then
-            self.speed = -math.random(300, 500)
+            self.speed = -math.random(400, 800)
             self.space = math.random(38, 100)
             self.spacePos = math.random(0, wh)
         elseif self.obsTop.body:getX() + self.obsTop.width/2 <= 0 then
-            self.speed = math.random(300, 500)
+            self.speed = math.random(400, 800)
             self.space = math.random(38, 100)
             self.spacePos = math.random(self.space, wh-self.space)
         end
@@ -38,12 +50,6 @@ function HITW:update(dt)
             player.lost = true
             player.obj.body:setType("static")
             menus.atMenu = "lose"
-        end
-    else
-        if player.obj.body:getX() + player.obj.width/2 <= 0 then
-            player.obj.body:setX(ww-player.obj.height)
-        elseif player.obj.body:getX() - player.obj.width/2 >= ww then
-            player.obj.body:setX(player.obj.width)
         end
     end
 
@@ -60,12 +66,18 @@ function HITW:draw()
     for id, object in pairs(block.blocks) do
         if string.match(id, "obstacle") then
             if not object.body:isDestroyed() then
-                love.graphics.setColor(62/255, 186/255, 73/255)
+                love.graphics.setColor(187/255, 52/255, 77/255)
                 love.graphics.draw(self.img, object.body:getX(), object.body:getY(), object.body:getAngle(), object.width, object.height, self.img:getWidth()/2, self.img:getHeight()/2)
-                love.graphics.draw(self.img, self.obsTop.body:getX(), self.obsTop.body:getY()+self.obsTop.height/2-25, self.obsTop.body:getAngle(), self.obsTop.width*1.5, 50, self.img:getWidth()/2, self.img:getHeight()/2)
-                love.graphics.draw(self.img, self.obsDown.body:getX(), self.obsDown.body:getY()-self.obsDown.height/2+25, self.obsDown.body:getAngle(), self.obsDown.width*1.5, 50, self.img:getWidth()/2, self.img:getHeight()/2)
+                love.graphics.draw(self.img, self.obsTop.body:getX(), self.obsTop.body:getY()+self.obsTop.height/2-12.5, self.obsTop.body:getAngle(), self.obsTop.width*1.25, 25, self.img:getWidth()/2, self.img:getHeight()/2)
+                love.graphics.draw(self.img, self.obsDown.body:getX(), self.obsDown.body:getY()-self.obsDown.height/2+12.5, self.obsDown.body:getAngle(), self.obsDown.width*1.25, 25, self.img:getWidth()/2, self.img:getHeight()/2)
             end
         end
     end
+
+    for id, object in pairs(self.coins) do
+        love.graphics.setColor(1, 163/255, 125/255)
+        love.graphics.circle("fill", object.x, object.y, object.r)
+    end
+
     love.graphics.setColor(1, 1, 1)
 end

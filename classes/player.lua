@@ -8,12 +8,20 @@ function Player:new()
     self.obj = block:newBlock("Player", ww/2, wh/2, 33, 33, "dynamic")
 
     self.lost = false
+    self.loopInWindow = false
 end
 
 function Player:update(dt)
     local pvx, pvy = self.obj.body:getLinearVelocity()
     if menus.atMenu == "pause" then 
         self.obj.body:setType("static")
+    end
+    if self.loopInWindow then
+        if player.obj.body:getX() + player.obj.width/2 <= 0 then
+            player.obj.body:setX(ww-player.obj.height)
+        elseif player.obj.body:getX() - player.obj.width/2 >= ww then
+            player.obj.body:setX(player.obj.width)
+        end
     end
     -- MOVEMENT
     function love.keypressed(key) -- Are stacked functions illegal? I feel like they are.

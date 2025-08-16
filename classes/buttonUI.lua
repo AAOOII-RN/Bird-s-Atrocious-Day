@@ -26,6 +26,16 @@ function ButtonUI:editButton(id, x, y, w, h, wake)
         }
 end
 
+function ButtonUI:refresh()
+    for _, obj in pairs(self.buttons) do
+        obj.x = 0
+        obj.y = 0
+        obj.width = 0
+        obj.height = 0
+        obj.wake = false
+    end
+end
+
 function ButtonUI:update(dt)
     mx, my = love.mouse.getPosition()
 

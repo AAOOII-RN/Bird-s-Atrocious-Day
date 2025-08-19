@@ -27,7 +27,13 @@ end
 function HITW:update(dt)
     self.ticker = self.ticker + 1 * dt
 
+    if menus.atMenu == "intro" then
+        self.obsTop.body:setX(-self.obsTop.width)
+        self.obsDown.body:setX(-self.obsDown.width)
+    end
     if menus.atMenu == "play" then
+        self.obsTop.body:setType("dynamic")
+        self.obsDown.body:setType("dynamic")
         self.obsTop.body:setLinearVelocity(self.speed, 0)
         self.obsDown.body:setLinearVelocity(self.speed, 0)
         self.obsTop.body:setY(self.spacePos - self.obsTop.height/2 - self.space)
@@ -42,6 +48,10 @@ function HITW:update(dt)
             self.space = math.random(38, 100)
             self.spacePos = math.random(self.space, wh-self.space)
         end
+    end
+    if menus.atMenu == "lose" then
+        self.obsTop.body:setType("static")
+        self.obsDown.body:setType("static")
     end
 
     -- PLAYER

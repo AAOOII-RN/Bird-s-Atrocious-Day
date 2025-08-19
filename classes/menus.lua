@@ -1,46 +1,55 @@
 Menus = Object:extend()
 
 function Menus:new()
-    -- List of Menus
-    -- 1. Intro     
-    -- 2. Play
-    -- 3. Paused
-    -- 4. Lose
-    -- 5. Store
+    --[[
+    List of Menus
+    1. Intro     
+    2. Play
+    3. Paused
+    4. Lose
+    5. Store
+    6. Settings
+    ]]
+
     self.img = love.graphics.newImage("img/zero.png")
     self.atMenu = "intro"
-    for i = 1, 8 do
-        if i <= 3 then
-            btnui:createButton("menu" .. i) -- What if I use pooling?
-        elseif i <= 8 then
-            btnui:createButton("store" .. i)
-        end
+    for i = 1, 4 do
+        btnui:createButton("menu" .. i) -- What if I use pooling?
+    end
+    for i = 1, 5 do
+        btnui:createButton("store" .. i)
     end
 end
 
 function Menus:update(dt)
+    local lerp_speed = 0.25
     player.loopInWindow = false
 
     if self.atMenu == "intro" then
         player.loopInWindow = true
-        for i = 1, 3 do
-            btnui:editButton("menu" .. i, ww/5 - 125, i*wh/4 - 62.5, 250, 125, true) -- Play
+        for i = 1, 4 do
+            btnui:editButton("menu" .. i, i*ww/5 - 125, 5*wh/6 - 62.5, 250, 125, true) -- Play
         end
         player.obj.body:setType("dynamic")
-        hitw.obsTop.body:setX(-hitw.obsTop.width)
-        hitw.obsDown.body:setX(-hitw.obsDown.width)
+        bg_color = lerp_colors(bg_color, rgb(0, 195, 255), lerp_speed)
+        gradient_color = lerp_colors(gradient_color, rgb(171,134,255), lerp_speed)
+        sun_color = lerp_colors(sun_color, rgb(255, 255, 117), lerp_speed)
 
     elseif self.atMenu == "store" then
-        for i = 4, 8 do
-            btnui:editButton("store" .. i, ww/5 - 125, (i-3)*wh/6 - 62.5, 250, 125, true) -- Store items
+        for i = 1, 5 do
+            btnui:editButton("store" .. i, ww/5 - 125, i*wh/6 - 62.5, 250, 125, true) -- Store items
         end
         btnui:editButton("menu1", 9*ww/10 - 62.5, wh/10 - 62.5, 125, 125, true) -- Back btn
+        bg_color = lerp_colors(bg_color, rgb(255,255,117), lerp_speed)
+        gradient_color = lerp_colors(gradient_color, rgb(0,194,255), lerp_speed)
+        sun_color = lerp_colors(sun_color, rgb(171,134,255), lerp_speed)
 
     elseif self.atMenu == "play" then
         btnui:editButton("menu1", 9*ww/10 - 62.5, wh/10 - 62.5, 125, 125, true) -- Pause btn
         player.obj.body:setType("dynamic")
-        hitw.obsTop.body:setType("dynamic")
-        hitw.obsDown.body:setType("dynamic")
+        bg_color = lerp_colors(bg_color, rgb(171,134,255), lerp_speed)
+        gradient_color = lerp_colors(gradient_color, rgb(255,150,150), lerp_speed)
+        sun_color = lerp_colors(sun_color, rgb(255,72,101), lerp_speed)
 
     elseif self.atMenu == "paused" then
         btnui:editButton("menu1", ww/2-125, wh/3-62.5, 250, 125, true) -- Resume
@@ -49,8 +58,6 @@ function Menus:update(dt)
     elseif self.atMenu == "lose" then
         btnui:editButton("menu1", ww/2 - 125, wh/3 - 62.5, 250, 125, true) -- Retry
         btnui:editButton("menu2", ww/2 - 125, 2*wh/3 - 62.5, 250, 125, true) -- Main Menu
-        hitw.obsTop.body:setType("static")
-        hitw.obsDown.body:setType("static")
     end
 end
 
@@ -68,7 +75,7 @@ function Menus:mousepressed()
             self.atMenu = "store"
             player.obj.body:setType("static")
             player.obj.body:setPosition(ww+512, wh+512)
-        elseif btnui:isHovered("menu3") then -- Exit
+        elseif btnui:isHovered("menu4") then -- Exit
             love.event.quit()
         end
 
@@ -113,7 +120,6 @@ function Menus:mousepressed()
             player.obj.body:setAngularVelocity(0)
             player.obj.body:setPosition(ww/2, wh/2)
             hitw.obsTop.body:setX(-hitw.obsTop.width)
-
             hitw.obsDown.body:setX(-hitw.obsDown.width)
 
             self.atMenu = "play"

@@ -11,17 +11,12 @@ function HITW:new()
     self.space = math.random(38, 100)
     self.spacePos = math.random(self.space, wh-self.space)
 
+    self.hitw_score = 0
+
     self.obsTop = block:newBlock("obstacle_top", -100, wh, 100, wh)
     self.obsDown = block:newBlock("obstacle_bottom", -100, 0, 100, wh)
     self.obsTop.body:setFixedRotation(true)
     self.obsDown.body:setFixedRotation(true)
-end
-
-function HITW:newCoin(id, x, y, r)
-    self.coins[id] = {}
-    self.coins[id].x = x
-    self.coins[id].y = y
-    self.coins[id].r = r
 end
 
 function HITW:update(dt)
@@ -48,19 +43,17 @@ function HITW:update(dt)
             self.space = math.random(38, 100)
             self.spacePos = math.random(self.space, wh-self.space)
         end
-    end
-    if menus.atMenu == "lose" then
-        self.obsTop.body:setType("static")
-        self.obsDown.body:setType("static")
-    end
 
-    -- PLAYER
-    if menus.atMenu == "play" or menus.atMenu == "lose" then
+        -- PLAYER
         if player.obj.body:getX() - player.obj.width/2 >= ww or player.obj.body:getX() + player.obj.width/2 <= 0 then
             player.lost = true
             player.obj.body:setType("static")
             menus.atMenu = "lose"
         end
+    end
+    if menus.atMenu == "lose" then
+        self.obsTop.body:setType("static")
+        self.obsDown.body:setType("static")
     end
 
     if player.obj.body:getY() + player.obj.width/2 <= 0 then
@@ -70,7 +63,24 @@ function HITW:update(dt)
     end
 end
 
-
+function HITW:mousepressed()
+    if menus.atMenu == "play" then
+        if btnui:isHovered("menu1") then -- Pause
+            self.obsTop.body:setType("static")
+            self.obsDown.body:setType("static")
+        end
+    elseif menus.atMenu == "paused" then
+        if btnui:isHovered("menu1") then -- Resume
+            self.obsTop.body:setType("dynamic")
+            self.obsDown.body:setType("dynamic")
+        end
+    elseif menus.atMenu == "lose" then
+        if btnui:isHovered("menu1") then -- Retry
+            self.obsTop.body:setX(-self.obsTop.width)
+            self.obsDown.body:setX(-self.obsDown.width)
+        end
+    end
+end
 
 function HITW:draw()
     for id, object in pairs(block.blocks) do

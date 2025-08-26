@@ -16,12 +16,28 @@ function Player:update(dt)
     if menus.atMenu == "intro" then
         self.loopInWindow = true
         self.obj.body:setType("dynamic")
+        if self.obj.body:getY() + self.obj.width/2 <= 0 then
+            self.obj.body:setY(wh-self.obj.height)
+        elseif self.obj.body:getY() - self.obj.width/2 >= wh then
+            self.obj.body:setY(self.obj.height)
+        end
     end
     if menus.atMenu == "pause" then
         self.obj.body:setType("static")
     end
     if menus.atMenu == "play" then
         self.obj.body:setType("dynamic")
+
+        if self.obj.body:getX() - self.obj.width/2 >= ww or self.obj.body:getX() + self.obj.width/2 <= 0 then
+            self.lost = true
+            self.obj.body:setType("static")
+            menus.atMenu = "lose"
+        end
+        if self.obj.body:getY() + self.obj.width/2 <= wh/10 then
+            self.obj.body:setY(9*wh/10-self.obj.height)
+        elseif self.obj.body:getY() - self.obj.width/2 >= 9*wh/10 then
+            self.obj.body:setY(wh/10 + self.obj.height)
+        end
     end
     if self.loopInWindow then
         if self.obj.body:getX() + self.obj.width/2 <= 0 then
@@ -107,7 +123,7 @@ function Player:keypressed(key) -- MOVEMENT
 end
 
 function Player:draw()
-    love.graphics.setColor(1, 205/255, 0)
+    love.graphics.setColor(rgba(221, 224, 240))
     love.graphics.draw(self.img, self.obj.body:getX(), self.obj.body:getY(), self.obj.body:getAngle(), self.obj.width, self.obj.height, self.img:getWidth()/2, self.img:getHeight()/2)
 
     love.graphics.setColor(1, 1, 1)

@@ -7,4 +7,21 @@
         "${3rd}/love2d/library"
     ],
     "Lua.workspace.checkThirdParty": false,
+    "files.autoSave": "afterDelay",
+    "editor.fontFamily": "Google Sans",
+    "editor.letterSpacing": 0.5,
+    "editor.lineHeight": 2,
+    "editor.quickSuggestions": {
+        "other": "off",
+        "comments": "on"
+    },
+    "editor.snippetSuggestions": "inline",
+    "editor.suggestOnTriggerCharacters": false,
+    "terminal.integrated.suggest.quickSuggestions": {
+
+        "commands": "on",
+        "arguments": "on",
+        "unknown": "off"
+    },
+    "editor.inlineSuggest.enabled": false,
 }

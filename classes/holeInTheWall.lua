@@ -17,6 +17,8 @@ function HITW:new()
     self.obsDown = block:newBlock("obstacle_bottom", -100, 0, 100, wh)
     self.obsTop.body:setFixedRotation(true)
     self.obsDown.body:setFixedRotation(true)
+
+    self.marginY = wh/10
 end
 
 function HITW:update(dt)
@@ -25,6 +27,7 @@ function HITW:update(dt)
     if menus.atMenu == "intro" then
         self.obsTop.body:setX(-self.obsTop.width)
         self.obsDown.body:setX(-self.obsDown.width)
+        self.marginY = lerp(self.marginY, wh/10, 0.05)
     end
     if menus.atMenu == "play" then
         self.obsTop.body:setType("dynamic")
@@ -37,29 +40,18 @@ function HITW:update(dt)
         if self.obsTop.body:getX() - self.obsTop.width/2 >= ww then
             self.speed = -math.random(400, 800)
             self.space = math.random(38, 100)
-            self.spacePos = math.random(0, wh)
+            self.spacePos = math.random(wh/10, 9*wh/10)
         elseif self.obsTop.body:getX() + self.obsTop.width/2 <= 0 then
             self.speed = math.random(400, 800)
             self.space = math.random(38, 100)
             self.spacePos = math.random(self.space, wh-self.space)
         end
 
-        -- PLAYER
-        if player.obj.body:getX() - player.obj.width/2 >= ww or player.obj.body:getX() + player.obj.width/2 <= 0 then
-            player.lost = true
-            player.obj.body:setType("static")
-            menus.atMenu = "lose"
-        end
+        self.marginY = lerp(self.marginY, 0, 0.025)
     end
     if menus.atMenu == "lose" then
         self.obsTop.body:setType("static")
         self.obsDown.body:setType("static")
-    end
-
-    if player.obj.body:getY() + player.obj.width/2 <= 0 then
-        player.obj.body:setY(wh-player.obj.height)
-    elseif player.obj.body:getY() - player.obj.width/2 >= wh then
-        player.obj.body:setY(player.obj.width)
     end
 end
 
@@ -98,6 +90,10 @@ function HITW:draw()
         love.graphics.setColor(1, 163/255, 125/255)
         love.graphics.circle("fill", object.x, object.y, object.r)
     end
+
+    love.graphics.setColor(rgba(26, 26, 37))
+    love.graphics.draw(self.img, 0, -self.marginY, 0, ww, wh/10)
+    love.graphics.draw(self.img, 0, 9*wh/10+self.marginY, 0, ww, wh/10)
 
     love.graphics.setColor(1, 1, 1)
 end

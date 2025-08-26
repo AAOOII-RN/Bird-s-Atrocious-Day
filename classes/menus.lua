@@ -22,7 +22,6 @@ function Menus:new()
 end
 
 function Menus:update(dt)
-    local lerp_speed = 0.25
     player.loopInWindow = false
 
     if self.atMenu == "intro" then
@@ -30,15 +29,18 @@ function Menus:update(dt)
         for i = 1, 4 do
             btnui:editButton("menu" .. i, i*ww/5 - 125, 5*wh/6 - 62.5, 250, 125, true) -- Play
         end
+        bg_color = lerp_colors(bg_color, rgba(62, 186, 73), 0.025)
 
     elseif self.atMenu == "store" then
         for i = 1, 5 do
             btnui:editButton("store" .. i, ww/5 - 125, i*wh/6 - 62.5, 250, 125, true) -- Store items
         end
         btnui:editButton("menu1", 9*ww/10 - 62.5, wh/10 - 62.5, 125, 125, true) -- Back btn
+        bg_color = lerp_colors(bg_color, rgba(255, 163, 125), 0.025)
 
     elseif self.atMenu == "play" then
         btnui:editButton("menu1", 9*ww/10 - 62.5, wh/10 - 62.5, 125, 125, true) -- Pause btn
+        bg_color = lerp_colors(bg_color, rgba(137, 107, 214), 0.025)
 
     elseif self.atMenu == "paused" then
         btnui:editButton("menu1", ww/2-125, wh/3-62.5, 250, 125, true) -- Resume

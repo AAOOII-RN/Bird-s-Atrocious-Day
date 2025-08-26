@@ -6,20 +6,22 @@ require "classes.block"
 require "classes.holeInTheWall"
 require "classes.buttonUI"
 require "classes.menus"
+require "classes.graphics"
 
 function love.load()
     math.randomseed(os.clock())
+    love.mouse.setVisible(false)
     ticker = 0 -- Don't trust love.timer.getTime()
     ww, wh = love.graphics.getDimensions()
 
     font = love.graphics.newFont("GameFont.ttf", 100, "light")
     love.graphics.setFont(font)
     
+    bg_color =  rgba(26, 26, 37)
+
     love.physics.setMeter(64)
     world = love.physics.newWorld(0, 627) -- 627
-    
-    bg_color =  rgba(0, 194, 255)
-
+    graphics = Graphics()
     btnui = ButtonUI()
     block = Block()
     menus = Menus()
@@ -42,14 +44,23 @@ function lerp_colors(t1, t2, t)
     return h
 end
 
+function lerp(from, to, t)
+    return from+t*(to-from)
+end
+
+function roundtobase(num, base)
+    return math.floor(num/base)*base
+end
+
 function love.update(dt)
     ticker = ticker + 1 * dt
     
     world:update(dt)
+    graphics:update(dt)
     btnui:update(dt)
     menus:update(dt)
     player:update(dt)
-    hitw:update(dt) 
+    hitw:update(dt)
 end
 
 function love.mousepressed() -- The menu func should be the last to call :DD
@@ -64,10 +75,12 @@ end
 
 function love.draw()
     love.graphics.setBackgroundColor(bg_color)
-    --love.graphics.draw(bg_test)
+    
+    graphics:draw()
     --block:draw()
     --btnui:draw()
     player:draw()
     hitw:draw()
     menus:draw()
+    love.graphics.circle("fill", love.mouse.getX(), love.mouse.getY(), 10)
 end

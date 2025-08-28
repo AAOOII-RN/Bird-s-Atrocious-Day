@@ -3,7 +3,7 @@ love.graphics.setDefaultFilter("nearest")
 Object = require "lib.classic"
 require "classes.player"
 require "classes.block"
-require "classes.holeInTheWall"
+require "classes.challenges"
 require "classes.buttonUI"
 require "classes.menus"
 require "classes.graphics"
@@ -12,6 +12,7 @@ function love.load()
     math.randomseed(os.clock())
     love.mouse.setVisible(false)
     ticker = 0 -- Don't trust love.timer.getTime()
+    
     ww, wh = love.graphics.getDimensions()
 
     font = love.graphics.newFont("GameFont.ttf", 100, "light")
@@ -26,7 +27,7 @@ function love.load()
     block = Block()
     menus = Menus()
     player = Player()
-    hitw = HITW()
+    challenges = Challenges()
 end
 
 function rgba(a, b, c, d) -- Im so tired of translating RGB to 0-1
@@ -60,12 +61,12 @@ function love.update(dt)
     btnui:update(dt)
     menus:update(dt)
     player:update(dt)
-    hitw:update(dt)
+    challenges:update(dt)
 end
 
 function love.mousepressed() -- The menu func should be the last to call :DD
     player:mousepressed()
-    hitw:mousepressed()
+    challenges:mousepressed()
     menus:mousepressed()
 end
 
@@ -77,10 +78,10 @@ function love.draw()
     love.graphics.setBackgroundColor(bg_color)
     
     graphics:draw()
-    --block:draw()
+    block:draw()
     --btnui:draw()
     player:draw()
-    hitw:draw()
+    challenges:draw()
     menus:draw()
     love.graphics.circle("fill", love.mouse.getX(), love.mouse.getY(), 10)
 end

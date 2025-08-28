@@ -20,8 +20,19 @@ function Block:deleteBlock(id)
     end
 end
 
+function Block:refresh(filter)
+    filter = filter or {0}
+    for id, _ in pairs(self.blocks) do
+        for _, avoid in pairs(filter) do
+            if string.match(id, avoid) then
+                self:newBlock(id, 0, 0, 0, 0)
+            end
+        end
+    end
+end
+
 function Block:draw()
-    for id, object in pairs(self.blocks) do
+    for _, object in pairs(self.blocks) do
         love.graphics.setColor(0, 1, 0)
         if not object.body:isDestroyed() then      
             love.graphics.polygon("line", object.body:getWorldPoints(object.shape:getPoints()))

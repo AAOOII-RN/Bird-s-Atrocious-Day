@@ -24,11 +24,11 @@ end
 
 function Graphics:update(dt)
     if menus.atMenu == "intro" then
-        graphics.bgstuff_circles_color = lerp_colors(graphics.bgstuff_circles_color, rgba(144, 79, 90), 0.025)
+        graphics.bgstuff_circles_color = lerp_colors(graphics.bgstuff_circles_color, rgba(200, 77, 61), 0.1)
     elseif menus.atMenu == "play" then
-        graphics.bgstuff_circles_color = lerp_colors(graphics.bgstuff_circles_color, rgba(60, 60, 80), 0.025)
+        graphics.bgstuff_circles_color = lerp_colors(graphics.bgstuff_circles_color, rgba(60, 60, 80), 0.1)
     elseif menus.atMenu == "store" then
-        graphics.bgstuff_circles_color = lerp_colors(graphics.bgstuff_circles_color, rgba(187, 52, 77), 0.025)
+        graphics.bgstuff_circles_color = lerp_colors(graphics.bgstuff_circles_color, rgba(0, 134, 74), 0.1)
     end
 end
 
@@ -36,9 +36,10 @@ function Graphics:draw()
     love.graphics.setBlendMode("alpha", "premultiplied")
     love.graphics.setColor(self.bgstuff_circles_color)
     love.graphics.draw(self.bgstuff_circles,
-    lerp(0, ww, love.math.noise(os.clock()/50)),
-    lerp(0, wh, love.math.noise(os.clock()/37)),
-    0, 1, 1,
+    lerp(0, ww, love.math.noise((ticker)/25)),
+    lerp(0, wh, love.math.noise(ticker/18)),
+    math.rad(lerp(-1, 1, math.sin(ticker/5))),
+    1, 1,
     self.bgstuff_circles:getWidth()/2,
     self.bgstuff_circles:getHeight()/2
 )

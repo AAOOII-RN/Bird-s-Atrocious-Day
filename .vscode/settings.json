@@ -24,4 +24,5 @@
         "unknown": "off"
     },
     "editor.inlineSuggest.enabled": false,
+    "editor.defaultFormatter": null,
 }

@@ -8,18 +8,22 @@ function Player:new()
     self.obj = block:newBlock("Player", ww/2, wh/2, 33, 33, "dynamic")
 
     self.lost = false
-    self.loopInWindow = false
 end
 
 function Player:update(dt)
     self.pvx, self.pvy = self.obj.body:getLinearVelocity()
     if menus.atMenu == "intro" then
-        self.loopInWindow = true
         self.obj.body:setType("dynamic")
-        if self.obj.body:getY() + self.obj.width/2 <= 0 then
-            self.obj.body:setY(wh-self.obj.height)
-        elseif self.obj.body:getY() - self.obj.width/2 >= wh then
-            self.obj.body:setY(self.obj.height)
+        if self.obj.body:getY() + self.obj.width <= 0 then
+            self.obj.body:setY(wh+self.obj.height)
+        elseif self.obj.body:getY() - self.obj.width >= wh then
+            self.obj.body:setY(-self.obj.height)
+        end
+
+        if self.obj.body:getX() + self.obj.width <= 0 then
+            self.obj.body:setX(ww+self.obj.height)
+        elseif self.obj.body:getX() - self.obj.width >= ww then
+            self.obj.body:setX(-self.obj.width)
         end
     end
     if menus.atMenu == "pause" then
@@ -33,17 +37,10 @@ function Player:update(dt)
             self.obj.body:setType("static")
             menus.atMenu = "lose"
         end
-        if self.obj.body:getY() + self.obj.width/2 <= wh/10 then
-            self.obj.body:setY(9*wh/10-self.obj.height)
-        elseif self.obj.body:getY() - self.obj.width/2 >= 9*wh/10 then
-            self.obj.body:setY(wh/10 + self.obj.height)
-        end
-    end
-    if self.loopInWindow then
-        if self.obj.body:getX() + self.obj.width/2 <= 0 then
-            self.obj.body:setX(ww-self.obj.height)
-        elseif self.obj.body:getX() - self.obj.width/2 >= ww then
-            self.obj.body:setX(self.obj.width)
+        if self.obj.body:getY() + self.obj.height <= wh/10 then
+            self.obj.body:setY(9*wh/10 + self.obj.height)
+        elseif self.obj.body:getY() - self.obj.height >= 9*wh/10 then
+            self.obj.body:setY(wh/10 - self.obj.height)
         end
     end
 
@@ -58,7 +55,7 @@ function Player:mousepressed()
             self.obj.body:setPosition(ww/2, wh/2)
             self.obj.body:setAngle(0)
             self.obj.body:setAngularVelocity(0)
-            self.obj.body:setLinearVelocity(0,0)
+            self.obj.body:setLinearVelocity(0,1)
         elseif btnui:isHovered("menu2") then
             self.obj.body:setType("static")
             self.obj.body:setPosition(ww+512, wh+512)
@@ -85,6 +82,7 @@ function Player:mousepressed()
 
         elseif btnui:isHovered("menu2") then
             self.obj.body:setPosition(ww/2, wh/2)
+            self.obj.body:setAngle(0)
         end
 
     elseif menus.atMenu == "lose" then

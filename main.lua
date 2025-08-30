@@ -49,6 +49,10 @@ function lerp(from, to, t)
     return from+t*(to-from)
 end
 
+function funnystep(x)
+    return 0.25*math.sin(2*x*math.pi)+x
+end
+
 function roundtobase(num, base)
     return math.floor(num/base)*base
 end
@@ -78,10 +82,11 @@ function love.draw()
     love.graphics.setBackgroundColor(bg_color)
     
     graphics:draw()
-    block:draw()
-    --btnui:draw()
     player:draw()
     challenges:draw()
     menus:draw()
+    --block:draw()
+    --btnui:draw()
     love.graphics.circle("fill", love.mouse.getX(), love.mouse.getY(), 10)
+    love.graphics.print("FPS: " .. tostring(love.timer.getFPS()), 10, 10, 0, 0.16, 0.16)
 end

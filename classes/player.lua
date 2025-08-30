@@ -8,6 +8,7 @@ function Player:new()
     self.obj = block:newBlock("Player", ww/2, wh/2, 33, 33, "dynamic")
 
     self.lost = false
+    self.pvx, self.pvy = 0,0
 end
 
 function Player:update(dt)
@@ -44,8 +45,8 @@ function Player:update(dt)
         end
     end
 
-    if self.pvy >= 3100 then
-        self.obj.body:setLinearVelocity(self.pvx, 3100)
+    if self.pvy >= 1500 then
+        self.obj.body:setLinearVelocity(self.pvx, 1500)
     end
 end
 

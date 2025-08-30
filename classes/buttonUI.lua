@@ -57,8 +57,8 @@ function ButtonUI:draw()
     for id, obj in pairs(self.buttons) do
         if obj.wake then
             love.graphics.rectangle("line", obj.x, obj.y, obj.width, obj.height)
-            love.graphics.print("ID: " .. id, obj.x, obj.y)
-            love.graphics.print("Hovered: " .. tostring(obj.hovered), obj.x, obj.y + obj.height/2)
+            love.graphics.print("ID: " .. id, obj.x, obj.y, 0, 0.16, 0.16)
+            love.graphics.print("Hovered: " .. tostring(obj.hovered), obj.x, obj.y + obj.height/2, 0, 0.16, 0.16)
         end
     end
     love.graphics.setColor(1, 1, 1)

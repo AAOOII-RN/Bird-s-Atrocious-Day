@@ -17,25 +17,16 @@ end
 function Block:deleteBlock(id)
     if not self.blocks[id].body:isDestroyed() then
         self.blocks[id].body:destroy()
-    end
-end
-
-function Block:refresh(filter)
-    filter = filter or {0}
-    for id, _ in pairs(self.blocks) do
-        for _, avoid in pairs(filter) do
-            if string.match(id, avoid) then
-                self:newBlock(id, 0, 0, 0, 0)
-            end
-        end
+        self.blocks[id] = nil
     end
 end
 
 function Block:draw()
-    for _, object in pairs(self.blocks) do
+    for id, object in pairs(self.blocks) do
         love.graphics.setColor(0, 1, 0)
         if not object.body:isDestroyed() then      
             love.graphics.polygon("line", object.body:getWorldPoints(object.shape:getPoints()))
+            love.graphics.print("ID: " .. id, object.body:getX(), object.body:getY(), 0, 0.16, 0.16)
         end
     end
 end

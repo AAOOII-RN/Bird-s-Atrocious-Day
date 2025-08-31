@@ -7,7 +7,6 @@ function Player:new()
     -- PLAYER PHYSICS BODY
     self.obj = block:newBlock("Player", ww/2, wh/2, 33, 33, "dynamic")
 
-    self.lost = false
     self.pvx, self.pvy = 0,0
 end
 
@@ -34,8 +33,6 @@ function Player:update(dt)
         self.obj.body:setType("dynamic")
 
         if self.obj.body:getX() - self.obj.width/2 >= ww or self.obj.body:getX() + self.obj.width/2 <= 0 then
-            self.lost = true
-            self.obj.body:setType("static")
             menus.atMenu = "lose"
         end
         if self.obj.body:getY() + self.obj.height <= wh/10 then
@@ -43,6 +40,9 @@ function Player:update(dt)
         elseif self.obj.body:getY() - self.obj.height >= 9*wh/10 then
             self.obj.body:setY(wh/10 - self.obj.height)
         end
+    end
+    if menus.atMenu == "lose" then
+        self.obj.body:setType("static")
     end
 
     if self.pvy >= 1500 then
@@ -88,7 +88,6 @@ function Player:mousepressed()
 
     elseif menus.atMenu == "lose" then
         if btnui:isHovered("menu1") then -- Retry
-            self.lost = false
             self.obj.body:setAngle(0)
             self.obj.body:setAngularVelocity(0)
             self.obj.body:setPosition(ww/2, wh/2)
@@ -100,7 +99,7 @@ end
 
 function Player:keypressed(key) -- MOVEMENT
     if key == "space" then
-        self.obj.body:setLinearVelocity(0, 0) -- STOP!
+        self.obj.body:setLinearVelocity(self.pvy/5, self.pvy/5)
         self.obj.body:setAngularVelocity(0)
         self.obj.body:applyLinearImpulse(0, -110 + math.min(self.pvy/6, 0))
         if self.pvx < 0 then

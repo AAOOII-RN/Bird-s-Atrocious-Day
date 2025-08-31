@@ -29,7 +29,7 @@ function Menus:update(dt)
         for i = 1, 4 do
             btnui:editButton("menu" .. i, i*ww/5 - 125, 5*wh/6 - 62.5, 250, 125, true) -- Play
         end
-        bg_color = lerp_colors(bg_color, rgba(255, 150, 150), 0.1)
+        bg_color = lerp_colors(bg_color, rgba(245, 171, 160), 0.1)
 
     elseif self.atMenu == "store" then
         for i = 1, 5 do

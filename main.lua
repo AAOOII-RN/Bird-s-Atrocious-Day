@@ -57,8 +57,12 @@ function roundtobase(num, base)
     return math.floor(num/base)*base
 end
 
+function insideCircle(cx, cy, cr, px, py)
+    return (px - cx)^2 + (py - cy)^2 < cr^2
+end
+
 function love.update(dt)
-    ticker = ticker + 1 * dt
+    ticker = ticker + dt
     
     world:update(dt)
     graphics:update(dt)

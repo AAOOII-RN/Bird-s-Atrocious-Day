@@ -24,7 +24,7 @@ end
 
 function Graphics:update(dt)
     if menus.atMenu == "intro" then
-        graphics.bgstuff_circles_color = lerp_colors(graphics.bgstuff_circles_color, rgba(200, 77, 61), 0.1)
+        graphics.bgstuff_circles_color = lerp_colors(graphics.bgstuff_circles_color, rgba(0, 140, 255), 0.1)
     elseif menus.atMenu == "play" then
         graphics.bgstuff_circles_color = lerp_colors(graphics.bgstuff_circles_color, rgba(60, 60, 80), 0.1)
     elseif menus.atMenu == "store" then

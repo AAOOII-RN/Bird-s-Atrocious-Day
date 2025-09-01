@@ -14,7 +14,7 @@ function Graphics:new()
             love.graphics.setColor(
             rgba(254, 255, 255, 
             roundtobase(love.math.noise(fx/5, fy/5), 0.33)*0.5+0.13)
-        ) -- Sometimes I can't see
+        ) -- Sometimes I can't see code
             love.graphics.circle("fill", fx*bgfx_d, fy*bgfx_d, bgfx_d/2)
         end
     end

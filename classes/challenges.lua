@@ -4,7 +4,7 @@ Challenges = Object:extend()
 
 function Challenges:new()
     self.img = love.graphics.newImage("img/zero.png")
-    self.listofChallenge = {
+    self.listofChallenge = { -- Planning on renaming
         "Rest",
         "Pushers",
         "Meteorite",
@@ -23,7 +23,7 @@ function Challenges:new()
     challengeInterval = 0
     pushersVelocityLerp = 0
 
-    self.stoveCircles = {} -- {x, y, r, time}
+    self.stoveRect = {} -- {x, y, size, goalX, goalY}
 end
 
 function Challenges:update(dt)
@@ -60,10 +60,6 @@ function Challenges:update(dt)
             block.blocks["obstacle1"].body:setY(wh/10 + (2+4*self.obstacle1y)*(wh/5)/4)
             block.blocks["obstacle2"].body:setY(wh/10 + (2+4*self.obstacle2y)*(wh/5)/4)
 
-            if challengeInterval <= 0 then
-                self:resetChallenge()
-            end
-
         elseif self.currentChallenge == "Meteorite" then
             challengeInterval = challengeInterval - 1 * dt
             for i = 0, 8 do
@@ -80,27 +76,22 @@ function Challenges:update(dt)
                     block.blocks["obstacle" .. i].body:setX(-block.blocks["obstacle" .. i].width/2)
                 end
             end
-            if challengeInterval <= 0 then
-                self:resetChallenge()
-            end
         elseif self.currentChallenge == "Stove" then
             challengeInterval = challengeInterval - 1 * dt
-            if math.random() >= 0.99 then
-                self.stoveCircles[#self.stoveCircles+1] = {
-                    math.min(math.max(player.obj.body:getX() + player.pvx/2, 50), ww-50), 
-                    math.min(math.max(player.obj.body:getY() + player.pvy/2, wh/10+50), 9*wh/10-50),
-                    50, 1}
-            end
-            for i, circle in pairs(self.stoveCircles) do
-                circle[3] = circle[3] + 75 * dt
-                circle[4] = circle[4] - 1 * dt
-                if circle[4] <= 0 then
-                    table.remove(self.stoveCircles, i)
-                    if insideCircle(circle[1], circle[2], circle[3], player.obj.body:getX(), player.obj.body:getY()) then
-                        menus.atMenu = "lose"
-                    end
+            for id, object in pairs(self.stoveRect) do
+                object[1] = lerp(object[1], object[4], 0.05)
+                object[2] = lerp(object[2], object[5], 0.05)
+                if math.random(0,250) == 50 then
+                    object[4] = player.obj.body:getX() + player.pvx - object[3]/2 + math.random(-100, 100)
+                    object[5] = player.obj.body:getY() + player.pvy - object[3]/2 + math.random(-100, 100)
+                end
+                if AABB(object[1], object[2], object[3], object[3], player.obj.body:getX(), player.obj.body:getY()) then
+                    player.obj.body:setLinearVelocity(player.pvx*-1.07+math.random()*1-0.5, player.pvy*-1)
                 end
             end
+        end
+        if challengeInterval <= 0 then
+            self:resetChallenge()
         end
 
     elseif menus.atMenu == "paused" then
@@ -123,9 +114,13 @@ function Challenges:prepareChallenge()
             block:deleteBlock(id)
         end
     end
+    for _, obj in pairs(self.stoveRect) do -- You never know how much time I've spent trying to kill those rectangles
+        obj[1] = -512
+        table.remove(self.stoveRect)
+    end
 
     --self.currentChallenge = self.listofChallenge[math.random(2, #self.listofChallenge)]
-    self.currentChallenge = self.listofChallenge[4]
+    self.currentChallenge = self.listofChallenge[math.random(2, 4)]
 
     if self.currentChallenge == "Pushers" then
         challengeInterval = 8
@@ -146,6 +141,16 @@ function Challenges:prepareChallenge()
         end
     elseif self.currentChallenge == "Stove" then
         challengeInterval = 30 
+        for i = 0, 15 do
+            local size = math.random(50, 150)
+            self.stoveRect[i] = {
+                (i+1)*ww/16,
+                -size/2,
+                size,
+                math.random(0, ww),
+                math.random(0, wh)
+            }
+        end
     elseif self.currentChallenge == "Beam" then
         -- to be implemented
     end
@@ -158,8 +163,9 @@ function Challenges:resetChallenge()
             block:deleteBlock(id)
         end
     end
-    for id, obj in pairs(self.stoveCircles) do
-        self.stoveCircles[id] = nil
+    for _, obj in pairs(self.stoveRect) do
+        obj[1] = -512 -- NO ONE WILL SEE THEM ANYMORE.
+        table.remove(self.stoveRect)
     end
 end
 
@@ -219,11 +225,10 @@ function Challenges:draw()
             end
         end
     end
-    for i, circle in ipairs(self.stoveCircles) do
-        if circle then
-            love.graphics.setColor(rgba(26, 26, 37, (3-circle[4])*0.33))
-            love.graphics.circle("fill", circle[1], circle[2], circle[3])
-        end
+    for id, object in pairs(self.stoveRect) do
+        love.graphics.setColor(rgba(26, 26, 37, 0.5))
+        love.graphics.rectangle("fill", object[1], object[2], object[3], object[3])
+        love.graphics.print(id, object[1]+object[3]/2, object[2]+object[3]/2, 0, 0.16, 0.16)
     end
 
     love.graphics.setColor(1, 1, 1)

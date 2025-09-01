@@ -57,8 +57,11 @@ function roundtobase(num, base)
     return math.floor(num/base)*base
 end
 
-function insideCircle(cx, cy, cr, px, py)
-    return (px - cx)^2 + (py - cy)^2 < cr^2
+function AABB(x1, y1, w1, h1, x2, y2)
+    return x1 < x2 and
+           x2 < x1 + w1 and
+           y1 < y2 and
+           y2 < y1 + h1
 end
 
 function love.update(dt)
